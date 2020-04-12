@@ -20,9 +20,9 @@ gem 'bootsnap', '>= 1.4.2', require: false
 
 #mis gemas
 gem 'mongoid'
-gem 'active_model_serializers'
+#gem 'active_model_serializers'
 gem 'rack-cors'
-
+gem 'httparty'
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin AJAX possible
 # gem 'rack-cors'
 
