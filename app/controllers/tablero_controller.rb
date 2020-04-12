@@ -1,5 +1,5 @@
 class TableroController < ApplicationController
-
+    before_action :authorize_request
 
     
 

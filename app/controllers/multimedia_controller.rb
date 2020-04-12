@@ -1,5 +1,5 @@
 class MultimediaController < ApplicationController
-
+    before_action :authorize_request
 
     def add
         #Verificando Parametros

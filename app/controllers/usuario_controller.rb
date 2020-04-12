@@ -1,5 +1,7 @@
 class UsuarioController < ApplicationController
 
+    before_action :authorize_request
+
     def delete
         #Verificando Parametros
         if  (params[:id] == nil)
