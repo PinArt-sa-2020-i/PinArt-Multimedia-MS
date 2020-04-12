@@ -134,7 +134,7 @@ class MultimediaController < ApplicationController
 
         #Eliminado la multimedia del bucket
         begin
-            # DeleteMultimediaBucket.call(multimedia.id_bucket)
+            DeleteMultimediaBucket.call(multimedia.id_bucket)
         rescue  Exception => e
             payload = {
                 message: "Ha ocurrido un error al eliminar el archivo del bucket",

@@ -10,9 +10,9 @@ class DeleteMultimediaBucket < ApplicationService
     if @id == nil
         raise "No existe ID, error en la eliminacion de la imagen"
     else
-        response = HTTParty.delete("http://3.227.65.124:8081/api/S3Bucket/DeleteFile/#{@id}")
+        response = HTTParty.delete("http://ec2-3-227-65-124.compute-1.amazonaws.com:8081/api/S3Bucket/DelFile/#{@id}")
         if response.code == 200
-            return OK
+            return "ok"
         else
             raise "Error al eliminar la Imagen" 
         end
