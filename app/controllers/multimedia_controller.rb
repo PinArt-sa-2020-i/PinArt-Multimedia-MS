@@ -414,8 +414,10 @@ class MultimediaController < ApplicationController
 
 
 
+    
 
 
+    
 
 
 
@@ -459,8 +461,6 @@ class MultimediaController < ApplicationController
         end
         
 
-
-        
         #Verificando la existencia de la etiqueta
         begin
             if multimedia.etiquetas_relacionadas.include?(etiqueta)
@@ -469,7 +469,7 @@ class MultimediaController < ApplicationController
                 etiqueta.update_attributes()
                 
                 payload = {
-                    message: "Etiqueta desasociada de la multimedia"
+                    message: "Etiqueta desasociada a la multimedia"
                 }
 
                 render :json => payload, :status => :ok
@@ -481,7 +481,7 @@ class MultimediaController < ApplicationController
             end
         rescue  Exception => e
             payload = {
-                message: "Ha ocurrido un error desasociar la etiqueta",
+                message: "Ha ocurrido un error desasociar la etiqueta a la multimedia",
                 error: e.to_s
             }
             render :json => payload, :status => 500
