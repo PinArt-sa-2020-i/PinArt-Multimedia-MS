@@ -10,7 +10,7 @@ class ReviewUsuario < ApplicationService
                 _id: @idUsuario
             )
             newUsuario.save!
-
+            
             return newUsuario
         else
             return Usuario.find_by(_id: @idUsuario)

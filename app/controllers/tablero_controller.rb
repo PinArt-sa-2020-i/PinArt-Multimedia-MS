@@ -4,25 +4,51 @@ class TableroController < ApplicationController
     
 
     def addMultimedia
+        #Verificando Parametros
+        if  (params[:idMultimedia] == nil) ||
+            (params[:idTablero] == nil) 
+            payload = {
+                message: "Parametros Incompletos"
+            }
+            render :json => payload, :status => 400
+            return
+        end
+
+        
         #verificar que multimedia exista
         if Multimedia.where(_id: params[:idMultimedia]).count() == 0
             payload = {
                 message: "La multimedia no existe"
             }
-            render :json => payload, :status => :ok
+            render :json => payload, :status => 400
+            return
         else
             #Se trae la multimedia
             multimedia = Multimedia.find_by(_id: params[:idMultimedia])
+        end
 
-            #verifica la existencia del tablero
+        #verifica la existencia del tablero
+        begin
             tablero = ReviewTablero.call(params[:idTablero])
+        rescue Exception => e
+            payload = {
+                message: "Error al verificar el tablero",
+                error: e.to_s
+            }
+            render :json => payload, :status => 500
+            return
+        end
 
-            if tablero.multimedia_agregada.include?(multimedia)
-                payload = {
-                    message: "La multimedia ya esta agregada"
-                }
-                render :json => payload, :status => :ok
-            else
+
+        #Verifica que el tablero incluya la multimedia
+        if tablero.multimedia_agregada.include?(multimedia)
+            payload = {
+                message: "La multimedia ya esta agregada a este tablero"
+            }
+            render :json => payload, :status => 400
+            return
+        else
+            begin
                 tablero.multimedia_agregada.push(multimedia)
                 tablero.update_attributes()
                 multimedia.update_attributes()
@@ -30,6 +56,14 @@ class TableroController < ApplicationController
                     message: "La multimedia agregada al tablero"
                 }
                 render :json => payload, :status => :ok
+                return
+            rescue Exception => e
+                payload = {
+                    message: "Error al agregar multimedia al tablero",
+                    error: e.to_s
+                }
+                render :json => payload, :status => 500
+                return
             end
         end
     end
@@ -37,40 +71,139 @@ class TableroController < ApplicationController
 
 
 
-    def deleteMultimedia
-        multimedia = Multimedia.find_by(_id: params[:idMultimedia])
-        tablero = Tablero.find_by(_id: params[:idTablero])
 
-        if tablero.multimedia_agregada.include?(multimedia)
-            tablero.multimedia_agregada.delete(multimedia)
-            tablero.update_attributes()
-            multimedia.update_attributes()
+
+
+
+
+
+
+
+    def deleteMultimedia
+        #Verificando Parametros
+        if  (params[:idMultimedia] == nil) ||
+            (params[:idTablero] == nil) 
             payload = {
-                message: "Multimedia eliminada del tablero"
+                message: "Parametros Incompletos"
             }
-            render :json => payload, :status => :ok
+            render :json => payload, :status => 400
+            return
+        end
+
+        #verificar que multimedia exista
+        if Multimedia.where(_id: params[:idMultimedia]).count() == 0
+            payload = {
+                message: "La multimedia no existe"
+            }
+            render :json => payload, :status => 400
+            return
+        else
+            #Se trae la multimedia
+            multimedia = Multimedia.find_by(_id: params[:idMultimedia])
+        end
+
+        #Verificar que el tablero existe
+        if Tablero.where(_id: params[:idTablero]).count() == 0
+            payload = {
+                message: "El tablero no existe"
+            }
+            render :json => payload, :status => 400
+            return
+        else
+            tablero = Tablero.find_by(_id: params[:idTablero])
+        end
+
+
+        #Verifica que la multimedia esta agregada al tablero
+        if tablero.multimedia_agregada.include?(multimedia)
+            begin
+                tablero.multimedia_agregada.delete(multimedia)
+                tablero.update_attributes()
+                multimedia.update_attributes()
+                payload = {
+                    message: "Multimedia eliminada del tablero"
+                }
+                render :json => payload, :status => :ok
+                return
+            rescue Exception => e
+                payload = {
+                    message: "Error al eliminar multimedia de tablero",
+                    error: e.to_s
+                }
+                render :json => payload, :status => 500
+                return
+            end
         else
             payload = {
                 message: "La multimedia no esta agregada al tablero"
             }
-            render :json => payload, :status => :ok
+            render :json => payload, :status => 400
+            return
         end
 
     end
 
 
-    def delete
-        tablero = Tablero.find_by(_id: params[:id])
 
-        tablero.multimedia_agregada.each do |multimedia|
-            multimedia.tableros_agregados.delete(tablero)
-            multimedia.update_attributes()
+
+
+
+
+
+
+
+    def delete
+        #Verificando Parametros
+        if  (params[:id] == nil)
+            payload = {
+                message: "Parametros Incompletos"
+            }
+            render :json => payload, :status => 400
+            return
         end
 
-        tablero.delete()
-        payload = {
-            message: "Tablero eliminado"
-        }
-        render :json => payload, :status => :ok
+
+        #Verificar que el tablero existe
+        if Tablero.where(_id: params[:idTablero]).count() == 0
+            payload = {
+                message: "El tablero no existe"
+            }
+            render :json => payload, :status => 400
+            return
+        else
+            tablero = Tablero.find_by(_id: params[:idTablero])
+        end
+
+        #Desasociando multimedia del tablero
+        begin
+            tablero.multimedia_agregada.each do |multimedia|
+                multimedia.tableros_agregados.delete(tablero)
+                multimedia.update_attributes()
+            end
+        rescue Exception => e
+            payload = {
+                message: "Error al desasociar multimedia de tablero",
+                error: e.to_s
+            }
+            render :json => payload, :status => 500
+            return
+        end
+
+        #Eliminando Tablero
+        begin
+            tablero.delete()
+            payload = {
+                message: "Tablero eliminado"
+            }
+            render :json => payload, :status => :ok
+            return
+        rescue Exception => e
+            payload = {
+                message: "Error al eliminar el tablero",
+                error: e.to_s
+            }
+            render :json => payload, :status => 500
+            return
+        end
     end
 end
