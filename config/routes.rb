@@ -25,4 +25,7 @@ Rails.application.routes.draw do
 
   #Etiquetas
   delete '/etiqueta/delete/:id', to: "etiqueta#delete", as: "deleteEtiqueta"
+
+  #Other
+  post '/others/generateToken', to: "others#generateToken", as: "generateToken"
 end
