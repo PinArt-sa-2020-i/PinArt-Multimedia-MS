@@ -28,7 +28,7 @@ class UsuarioController < ApplicationController
 
             #Eliminado la multimedia
             begin
-                # DeleteMultimediaBucket.call(multimedia.id_bucket)
+                DeleteMultimediaBucket.call(multimedia.id_bucket)
             rescue Exception => e
                 payload = {
                     message: "Error al eliminar archivos multimedia del usuario",

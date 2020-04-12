@@ -6,13 +6,11 @@ class UploadMultimedia < ApplicationService
     def execute
         data_imagen = Hash.new
         #Cargar la imagen
-        # data_imagen[:id_bucket] = upload
+        data_imagen[:id_bucket] = upload
 
         #Recupera la URL
-        # data_imagen[:url_imagen] = getUrl(data_imagen[:id_bucket])
+        data_imagen[:url_imagen] = getUrl(data_imagen[:id_bucket])
 
-        data_imagen[:id_bucket] = "Un ID"
-        data_imagen[:url_imagen] = "Una URL"
         return data_imagen
         
 
@@ -25,13 +23,13 @@ class UploadMultimedia < ApplicationService
             if @image == nil
                 raise "No existe imagen"
             else
-                response = HTTParty.post("http://3.227.65.124:8081/api/S3Bucket/AddFile", body: {file: @image})
+                response = HTTParty.post("http://ec2-3-227-65-124.compute-1.amazonaws.com:8081/api/S3Bucket/AddFile", body: {file: @image})
                 if response.code == 200
                     #Aqui se debe devolver el id, de momento solo recibe el url
-                    #return JSON.parse(response.body)["message"]
+                    return JSON.parse(response.body)["message"]
 
                     #Retorno provisional 100% funcional
-                    return JSON.parse(response.body)["message"].slice(47,JSON.parse(response.body)["message"].length)
+                    # return JSON.parse(response.body)["message"].slice(47,JSON.parse(response.body)["message"].length)
                 else 
                     raise "Fallo en la subida de la imagen"
                 end
@@ -44,7 +42,7 @@ class UploadMultimedia < ApplicationService
             if id_bucket == nil
                 raise "No existe ID, error en la subida de la imagen"
             else
-                response = HTTParty.get("http://3.227.65.124:8081/api/S3Bucket/GetFile/#{id_bucket}")
+                response = HTTParty.get("http://ec2-3-227-65-124.compute-1.amazonaws.com:8081/api/S3Bucket/GetFile/#{id_bucket}")
                 if response.code == 200
                     return JSON.parse(response.body)["message"]
                 else
