@@ -1,0 +1,563 @@
+#Test with: http://editor.swagger.io/
+
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: PinArt-Multimedia-MS
+  description: Ruby on Rails + MongoDB
+  license:
+    name: Software Architecture, Group 2B, 2020-I
+host: ec2-3-84-144-211.compute-1.amazonaws.com:3000
+schemes:
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /multimedia/add:
+    post:
+      summary: Agrega una multimedia 
+      operationId: addMultimedia
+      parameters:
+        - name: newMultimedia
+          in: body
+          required: true
+          description: Informacion de la multimedia a crear
+          schema:
+            $ref: '#/definitions/AddMultimedia'
+        
+      responses:
+        '200':
+          description: Multimedia Creada de Manera Correcta
+          schema:
+            $ref: '#/definitions/Multimedia'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Ha ocurrido un error al guardar multimedia
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Ha ocurrido un error cargar el archivo multimedia
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '502':
+          description: Ha ocurrido un error al verificar las referencias
+          schema:
+            $ref: '#/definitions/ErrorModel'
+            
+  /multimedia/delete/{id}/{idEtiqueta}:
+    delete:
+      summary: Desasociar una etiqueta a una multimedia
+      operationId: deleteTagMultimedia
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id de la multimedia
+          type: string
+        - name: idEtiqueta
+          in: path
+          required: true
+          description: Id del tag a borrar
+          type: string
+        
+      responses:
+        '200':
+          description: Etiqueta desasociada a la multimedia
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Etiqueta no asociada a la multimedia
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: Esta Multimedia no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Ha ocurrido un error al obtener la etiqueta
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Ha ocurrido un error desasociar la etiqueta a la multimedia
+          schema:
+            $ref: '#/definitions/ErrorModel'
+            
+  /multimedia/delete/{id}:
+    delete:
+      summary: Borrar una multimedia 
+      operationId: deleteMultimedia
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id de la multimedia a borrar
+          type: string
+        
+      responses:
+        '200':
+          description: Multimedia eliminada de manera correcta
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: Esta Multimedia no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Ha ocurrido un error al eliminar el archivo del bucket
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Ha ocurrido un error al eliminar las referencias de las etiquetas
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '502':
+          description: Ha ocurrido un error al eliminar las referencias de los tableros
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '503':
+          description: Ha ocurrido un error al eliminar la multimedia
+          schema:
+            $ref: '#/definitions/ErrorModel'
+            
+  /multimedia/update:
+    put:
+      summary: Actualizar una multimedia 
+      operationId: updateMultimedia
+      parameters:
+        - name: updateMultimedia
+          in: body
+          required: true
+          description: Datos para actualizar la multimedia
+          schema:
+            $ref: '#/definitions/UpdateMultimedia'
+        
+      responses:
+        '200':
+          description: Multimedia actualizada de manera correcta
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: Esta Multimedia no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Ha ocurrido un error guardar la actualizacion de la multimedia
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Ha ocurrido un error al desasociar las viejas etiquetas
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '502':
+          description: Ha ocurrido un error guardar la actualizacion de la multimedia
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '503':
+          description: Ha ocurrido un error al asociar las nuevas etiqueta
+          schema:
+            $ref: '#/definitions/ErrorModel'
+            
+  /multimedia/addEtiqueta:
+    put:
+      summary: Agregar una etiqueta a una multimedia
+      operationId: addEtiquetaToMultimedia
+      parameters:
+        - name: updateMultimedia
+          in: body
+          required: true
+          description: Datos para agregar la etiqueta a multimedia
+          schema:
+            $ref: '#/definitions/AddEtiqueta'
+        
+      responses:
+        '200':
+          description: Etiqueta Agregada
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: Esta Multimedia no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '402':
+          description: Esta etiqueta ya esta agregada a la multimedia
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Ha ocurrido un error obtener la etiqueta
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Ha ocurrido un error al desasociar las viejas etiquetas
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '502':
+          description: Ha ocurrido un error al agregar la etiqueta
+          schema:
+            $ref: '#/definitions/ErrorModel'
+            
+  /tablero/addMultimedia:
+    post:
+      summary: Agrega una multimedia a un tablero 
+      operationId: addMultimediaTablero
+      parameters:
+        - name: addMultimediaToTag
+          in: body
+          required: true
+          description: Ids de la multimedia y el tablero al que se quiere asociar
+          schema:
+            $ref: '#/definitions/AddMultimediaToTag'
+        
+      responses:
+        '200':
+          description: La multimedia fue agregada al tablero
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: La multimedia no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '402':
+          description: La multimedia ya esta agregada a este tablero
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Error al verificar el tablero
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Error al agregar multimedia al tablero
+          schema:
+            $ref: '#/definitions/ErrorModel'
+            
+  /tablero/deleteMultimedia/{idTablero}/{idMultimedia}:
+    delete:
+      summary: Borrar una multimedia a un tablero especifico
+      operationId: deleteMultimediaFromTable
+      parameters:
+        - name: idTablero
+          in: path
+          required: true
+          description: Id del tablero
+          type: string
+        - name: idMultimedia
+          in: path
+          required: true
+          description: Id de la multimedia a borrar
+          type: string
+        
+      responses:
+        '200':
+          description: Multimedia eliminada del tablero
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: Esta Multimedia no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '402':
+          description: El tablero no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '403':
+          description: La multimedia no esta agregada al tablero
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Error al eliminar multimedia de tablero
+          schema:
+            $ref: '#/definitions/ErrorModel'
+            
+  /tablero/delete/{id}:
+    delete:
+      summary: Borrar un tablero
+      operationId: deleteTable
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id del tablero
+          type: string
+        
+      responses:
+        '200':
+          description: Tablero eliminado
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: El tablero no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Error al desasociar multimedia de tablero
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Error al eliminar el tablero
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /usuario/delete/{id}:
+    delete:
+      summary: Borrar un usuario
+      operationId: deleteUser
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id del usuario
+          type: string
+        
+      responses:
+        '200':
+          description: Usuario Eliminado
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: El usuario no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Error al eliminar archivos multimedia del usuario
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Error al desasociar etiquetas de la multimedia del usuario
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '502':
+          description: Error al desasociar tableros de la multimedia del usuario
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '503':
+          description: Error al eliminar multimedia del usuario
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '504':
+          description: Error al eliminar usuario
+          schema:
+            $ref: '#/definitions/ErrorModel'
+  /etiqueta/delete/{id}:
+    delete:
+      summary: Borrar un usuario
+      operationId: deleteTag
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Id de la etiqueta
+          type: string
+        
+      responses:
+        '200':
+          description: Etiqueta Eliminado
+          schema:
+            $ref: '#/definitions/AcceptModel'
+        '400':
+          description: Parametros Incompletos
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '401':
+          description: La etiqueta no existe
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '500':
+          description: Error al desasociar multimedia de la etiqueta
+          schema:
+            $ref: '#/definitions/ErrorModel'
+        '501':
+          description: Error al eliminar etiqueta
+          schema:
+            $ref: '#/definitions/ErrorModel'
+
+definitions:
+
+  Usuario:
+    type: object
+    properties:
+      _id:
+        type: string
+      created_at:
+        type: string
+      updated_at:
+        type: string
+
+  Multimedia:
+    type: object
+    properties:
+      _id:
+        type: string
+      descripcion:
+        type: string
+      url:
+        type: string
+      tipo:
+        type: string
+      formato:
+        type: string
+      tamano:
+        type: string
+      id_bucket:
+        type: string
+      usuario_creador_id:
+        $ref: '#/definitions/Usuario'
+      etiquetas_relacionadas_ids:
+        type: array
+        items:
+          $ref: '#/definitions/Etiqueta'
+      tableros_agregados_ids:
+        type: array
+        items:
+          $ref: '#/definitions/Tablero'
+      created_at:
+        type: string
+      updated_at:
+        type: string
+
+  Tablero:
+    type: object
+    properties:
+      _id:
+        type: string
+      multimedia_agregada_ids:
+        type: array
+        items:
+          $ref: '#/definitions/Multimedia'
+      created_at:
+        type: string
+      updated_at:
+        type: string
+        
+  Etiqueta:
+    type: object
+    properties:
+      _id:
+        type: string
+      multimedia_relacionada_ids:
+        type: array
+        items:
+          $ref: '#/definitions/Multimedia'
+      created_at:
+        type: string
+      updated_at:
+        type: string
+        
+# Modelos extras para definir las respuestas a las peticiones
+
+  
+#Modelos extras para definir los inputs de los POST
+
+  EtiquetaId:
+    type: object
+    properties:
+      _id:
+        type: string
+
+  AddMultimedia:
+    type: object
+    properties:
+      _id:
+        type: string
+      descripcion:
+        type: string
+      url:
+        type: string
+      tipo:
+        type: string
+      formato:
+        type: string
+      tamano:
+        type: string
+      id_bucket:
+        type: string
+      usuario_creador_id:
+        $ref: '#/definitions/Usuario'
+      etiquetas_relacionadas_ids:
+        type: array
+        items:
+          $ref: '#/definitions/EtiquetaId'
+          
+  AddMultimediaToTag:
+    type: object
+    properties:
+      idMultimedia:
+        type: string
+      idTablero:
+        type: string
+          
+  AddEtiqueta:
+    type: object
+    properties:
+      idMultimedia:
+        type: string
+      idEtiqueta:
+        type: string
+          
+  UpdateMultimedia:
+    type: object
+    properties:
+      _id:
+        type: string
+      descripcion:
+        type: string
+      etiquetas_relacionadas_ids:
+        type: array
+        items:
+          $ref: '#/definitions/EtiquetaId'
+
+  DeleteMultimedia:
+    type: string
+
+  AcceptModel:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+
+# Errors
+  ErrorModel:
+    type: object
+    required:
+      - message
+      - code
+    properties:
+      message:
+        type: string
+      code:
+        type: number
+      description:
+        type: object
