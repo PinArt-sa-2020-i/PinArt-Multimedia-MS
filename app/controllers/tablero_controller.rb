@@ -1,5 +1,5 @@
 class TableroController < ApplicationController
-    #before_action :authorize_request
+    before_action :authorize_request
 
     
 
@@ -154,7 +154,7 @@ class TableroController < ApplicationController
 
     def delete
         #Verificando Parametros
-        if  (params[:idTablero] == nil)
+        if  (params[:id] == nil)
             payload = {
                 message: "Parametros Incompletos"
             }
