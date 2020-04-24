@@ -1,5 +1,5 @@
 class TableroController < ApplicationController
-    before_action :authorize_request
+    #before_action :authorize_request
 
     
 
@@ -52,8 +52,18 @@ class TableroController < ApplicationController
                 tablero.multimedia_agregada.push(multimedia)
                 tablero.update_attributes()
                 multimedia.update_attributes()
+
+                multimedia_agregada_ids = []
+                tablero.multimedia_agregada_ids.each do |idEtiqueta|
+                    multimedia_agregada_ids.push(idEtiqueta.to_s)
+                end
+
                 payload = {
-                    message: "La multimedia agregada al tablero"
+                    message: "La multimedia agregada al tablero",
+                    tablero: {
+                            id: tablero._id,
+                            multimedia_agregada_ids: multimedia_agregada_ids
+                    }    
                 }
                 render :json => payload, :status => :ok
                 return
@@ -120,8 +130,18 @@ class TableroController < ApplicationController
                 tablero.multimedia_agregada.delete(multimedia)
                 tablero.update_attributes()
                 multimedia.update_attributes()
+
+                multimedia_agregada_ids = []
+                tablero.multimedia_agregada_ids.each do |idEtiqueta|
+                    multimedia_agregada_ids.push(idEtiqueta.to_s)
+                end
+
                 payload = {
-                    message: "Multimedia eliminada del tablero"
+                    message: "Multimedia eliminada del tablero",
+                    tablero: {
+                        id: tablero._id,
+                        multimedia_agregada_ids: multimedia_agregada_ids
+                    } 
                 }
                 render :json => payload, :status => :ok
                 return
@@ -164,14 +184,14 @@ class TableroController < ApplicationController
 
 
         #Verificar que el tablero existe
-        if Tablero.where(_id: params[:idTablero]).count() == 0
+        if Tablero.where(_id: params[:id]).count() == 0
             payload = {
                 message: "El tablero no existe"
             }
             render :json => payload, :status => 400
             return
         else
-            tablero = Tablero.find_by(_id: params[:idTablero])
+            tablero = Tablero.find_by(_id: params[:id])
         end
 
         #Desasociando multimedia del tablero
