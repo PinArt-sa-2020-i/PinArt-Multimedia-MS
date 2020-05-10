@@ -1,3 +1,4 @@
+
 ## Microservicio Multimedia - PinArt
 
 **Desarrollado por:** Camilo Andres Gil Ballen - CamiloBallen24
@@ -19,7 +20,4 @@
  - Repositorios:
 	 - [Repositorio: Mini Curso - Ruby on Rails 5](https://github.com/RpL02/RailsGram)
 	 - [Repositorio: Guie Build API](https://github.com/bradtraversy/simple-rails-rest)
-
-
- 
 
