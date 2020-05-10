@@ -1,12 +1,15 @@
 class MultimediaController < ApplicationController
-    before_action :authorize_request
+    #before_action :authorize_request
 
     def add
         #Verificando Parametros
         if  (params[:descripcion] == nil) ||
             (params[:idUsuario] == nil) ||
             (params[:idEtiquetas] == nil) ||
-            (params[:file] == nil)
+            (params[:id_bucket] == nil) ||
+            (params[:url_imagen] == nil) ||
+            (params[:formato] == nil) ||
+            (params[:tamano] == nil) 
             payload = {
                 message: "Parametros Incompletos"
             }
@@ -35,27 +38,28 @@ class MultimediaController < ApplicationController
     
 
         #Se guarda el archivo multimedia en el bucket
-        begin
-            data_bucket = UploadMultimedia.call(params[:file].tempfile);
-        rescue Exception => e
-            payload = {
-                message: "Ha ocurrido un error cargar el archivo multimedia",
-                error: e.to_s
-            }
-            render :json => payload, :status => 500
-            return
-        end
+        #begin
+        #    data_bucket = UploadMultimedia.call(params[:file].tempfile);
+        #rescue Exception => e
+        #     payload = {
+        #         message: "Ha ocurrido un error cargar el archivo multimedia",
+        #         error: e.to_s
+        #     }
+        #     render :json => payload, :status => 500
+        #     return
+        # end
 
 
         #Creando la multimedia
         newMultimedia = Multimedia.new(
             descripcion: params[:descripcion],
-            formato: params[:file].content_type,
-            tamano: params[:file].size,
-            url: data_bucket[:url_imagen],
-            id_bucket: data_bucket[:id_bucket],
+            formato: params[:formato],
+            tamano: params[:tamano],
+            url: params[:url_imagen],
+            id_bucket: params[:id_bucket],
             usuario_creador: usuario,
-            etiquetas_relacionadas: etiquetas
+            etiquetas_relacionadas: etiquetas,
+            tableros_agregado_ids: []
         )
 
         #Guardando Multimedia
@@ -81,10 +85,23 @@ class MultimediaController < ApplicationController
         end
 
 
+
         #Solicitud procesada de manera correcta
         payload = {
             message: "Multimedia Creada de Manera Correcta",
-            multimedia: newMultimedia
+            multimedia: {
+                id: newMultimedia._id.to_s,
+                descripcion: newMultimedia.descripcion,
+                formato: newMultimedia.formato,
+                tamano: newMultimedia.tamano,
+                url: newMultimedia.url,
+                id_bucket: newMultimedia.id_bucket,
+                usuario_creador_id: newMultimedia.usuario_creador_id,
+                etiquetas_relacionadas_ids: newMultimedia.etiquetas_relacionada_ids,
+                tableros_agregados_ids: newMultimedia.tableros_agregado_ids,
+                updated_at: newMultimedia.updated_at,
+                created_at: newMultimedia.created_at
+            }
         }
         render :json => payload, :status => :ok
     end
@@ -133,16 +150,16 @@ class MultimediaController < ApplicationController
 
 
         #Eliminado la multimedia del bucket
-        begin
-            DeleteMultimediaBucket.call(multimedia.id_bucket)
-        rescue  Exception => e
-            payload = {
-                message: "Ha ocurrido un error al eliminar el archivo del bucket",
-                error: e.to_s
-            }
-            render :json => payload, :status => 500
-            return
-        end 
+        # begin
+        #     DeleteMultimediaBucket.call(multimedia.id_bucket)
+        # rescue  Exception => e
+        #     payload = {
+        #         message: "Ha ocurrido un error al eliminar el archivo del bucket",
+        #         error: e.to_s
+        #     }
+        #     render :json => payload, :status => 500
+        #     return
+        # end 
 
 
 
@@ -321,7 +338,20 @@ class MultimediaController < ApplicationController
 
         #Solicitud procesada de manera correcta
         payload = {
-            message: "Multimedia actualizada de manera correcta"
+            message: "Multimedia actualizada de manera correcta",
+            multimedia: {
+                id: multimedia._id.to_s,
+                descripcion: multimedia.descripcion,
+                formato: multimedia.formato,
+                tamano: multimedia.tamano,
+                url: multimedia.url,
+                id_bucket: multimedia.id_bucket,
+                usuario_creador_id: multimedia.usuario_creador_id,
+                etiquetas_relacionadas_ids: multimedia.etiquetas_relacionada_ids,
+                tableros_agregados_ids: multimedia.tableros_agregado_ids,
+                updated_at: multimedia.updated_at,
+                created_at: multimedia.created_at
+            }
         }
         render :json => payload, :status => :ok
 
@@ -397,7 +427,20 @@ class MultimediaController < ApplicationController
                 multimedia.update_attributes()
                 etiqueta.update_attributes()
                 payload = {
-                    message: "Etiqueta Agregada"
+                    message: "Etiqueta Agregada",
+                    multimedia: {
+                        id: multimedia._id.to_s,
+                        descripcion: multimedia.descripcion,
+                        formato: multimedia.formato,
+                        tamano: multimedia.tamano,
+                        url: multimedia.url,
+                        id_bucket: multimedia.id_bucket,
+                        usuario_creador_id: multimedia.usuario_creador_id,
+                        etiquetas_relacionadas_ids: multimedia.etiquetas_relacionada_ids,
+                        tableros_agregados_ids: multimedia.tableros_agregado_ids,
+                        updated_at: multimedia.updated_at,
+                        created_at: multimedia.created_at
+                    }
                 }
                 render :json => payload, :status => :ok
             rescue  Exception => e
@@ -469,7 +512,21 @@ class MultimediaController < ApplicationController
                 etiqueta.update_attributes()
                 
                 payload = {
-                    message: "Etiqueta desasociada a la multimedia"
+                    message: "Etiqueta desasociada a la multimedia",
+                    multimedia: {
+                        id: multimedia._id.to_s,
+                        descripcion: multimedia.descripcion,
+                        formato: multimedia.formato,
+                        tamano: multimedia.tamano,
+                        url: multimedia.url,
+                        id_bucket: multimedia.id_bucket,
+                        usuario_creador_id: multimedia.usuario_creador_id,
+                        etiquetas_relacionadas_ids: multimedia.etiquetas_relacionada_ids,
+                        tableros_agregados_ids: multimedia.tableros_agregado_ids,
+                        updated_at: multimedia.updated_at,
+                        created_at: multimedia.created_at,
+
+                    }
                 }
 
                 render :json => payload, :status => :ok

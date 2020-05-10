@@ -1,5 +1,5 @@
 class EtiquetaController < ApplicationController
-    before_action :authorize_request
+    #before_action :authorize_request
 
     def delete
         #Verificando Parametros

@@ -1,6 +1,6 @@
 class UsuarioController < ApplicationController
 
-    before_action :authorize_request
+    #before_action :authorize_request
 
     def delete
         #Verificando Parametros
@@ -28,17 +28,17 @@ class UsuarioController < ApplicationController
         #Eliminando la multimedia del  usuario
         Multimedia.where(usuario_creador_id: params[:id]).each do |multimedia|
 
-            #Eliminado la multimedia
-            begin
-                DeleteMultimediaBucket.call(multimedia.id_bucket)
-            rescue Exception => e
-                payload = {
-                    message: "Error al eliminar archivos multimedia del usuario",
-                    error: e.to_s
-                }
-                render :json => payload, :status => 500
-                return
-            end
+        #Eliminado la multimedia
+        # begin
+        #     DeleteMultimediaBucket.call(multimedia.id_bucket)
+        # rescue Exception => e
+        #     payload = {
+        #         message: "Error al eliminar archivos multimedia del usuario",
+        #         error: e.to_s
+        #     }
+        #     render :json => payload, :status => 500
+        #     return
+        # end
             
 
             #Quitando la asociacion de cada etiqueta

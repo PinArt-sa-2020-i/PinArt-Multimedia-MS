@@ -8,7 +8,7 @@ Rails.application.routes.draw do
 
   put '/multimedia/update', to:'multimedia#update', as: "updateMultimedia"
 
-  delete '/multimedia/deleteEtiqueta/:id/:idEtiqueta', to:"multimedia#deleteEtiqueta", as: "deleteEtiquetaMultimedia"
+  delete '/multimedia/deleteEtiqueta/:idMultimedia/:idEtiqueta', to:"multimedia#deleteEtiqueta", as: "deleteEtiquetaMultimedia"
 
   put '/multimedia/addEtiqueta', to:"multimedia#addEtiqueta", as: "addEtiquetaMultimedia"
 
