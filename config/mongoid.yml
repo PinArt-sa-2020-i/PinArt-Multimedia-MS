@@ -5,16 +5,15 @@ development:
     default:
       # Mongoid can connect to a URI accepted by the driver:
       # uri: mongodb://user:password@mongodb.domain.com:27017/pin_art_multimedia_ms_development
-
+        uri: mongodb://<%= ENV['USER_DB'] %>:<%= ENV['PASSWORD_DB'] %>@<%= ENV['URL_MULTIMEDIA_DB'] %>/pinart-feed_multimedia-db
       # Otherwise define the parameters separately.
       # This defines the name of the default database that Mongoid can connect to.
       # (required).
-      database: pinart-feed_multimedia-db
+      #database: pinart-feed_multimedia-db
       # Provides the hosts the default client can connect to. Must be an array
       # of host:port pairs. (required)
-      hosts:
-        - <%= ENV['URL_MULTIMEDIA_DB'] %>
-      options:
+      #hosts:
+      #options:
         # Note that all options listed below are Ruby driver client options (the mongo gem).
         # Please refer to the driver documentation of the version of the mongo gem you are using
         # for the most up-to-date list of options.
@@ -32,10 +31,10 @@ development:
         #     - use: web
 
         # The name of the user for authentication.
-         user: <%= ENV['USER_DB'] %>
+        #user: 
 
         # The password of the user for authentication.
-        password: <%= ENV['PASSWORD_DB'] %>
+        #password: 
 
         # The user's database roles.
         # roles:
@@ -165,12 +164,6 @@ test:
       hosts:
         - <%= ENV['URL_MULTIMEDIA_DB'] %>
       options:
-        # The name of the user for authentication.
-         user: <%= ENV['USER_DB'] %>
-
-        # The password of the user for authentication.
-        password: <%= ENV['PASSWORD_DB'] %>
-        
         read:
           mode: :primary
         max_pool_size: 1
