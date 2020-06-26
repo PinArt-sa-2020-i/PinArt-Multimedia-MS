@@ -32,10 +32,10 @@ development:
         #     - use: web
 
         # The name of the user for authentication.
-        # user: 'user'
+         user: <%= ENV['USER_DB'] %>
 
         # The password of the user for authentication.
-        # password: 'password'
+        password: <%= ENV['PASSWORD_DB'] %>
 
         # The user's database roles.
         # roles:
@@ -165,6 +165,12 @@ test:
       hosts:
         - <%= ENV['URL_MULTIMEDIA_DB'] %>
       options:
+        # The name of the user for authentication.
+         user: <%= ENV['USER_DB'] %>
+
+        # The password of the user for authentication.
+        password: <%= ENV['PASSWORD_DB'] %>
+        
         read:
           mode: :primary
         max_pool_size: 1
